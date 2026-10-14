@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/*
+  Opal Screening design tokens
+  Palette is drawn from the approved shield mark: deep navy body,
+  blue-to-aqua facets and a single opal accent. Neutrals are tinted
+  toward the navy hue so grays never read as "default gray".
+*/
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-ink-950: oklch(0.15 0.035 262);
+  --color-ink-900: oklch(0.19 0.045 262);
+  --color-ink-850: oklch(0.22 0.05 262);
+  --color-ink-800: oklch(0.26 0.055 262);
+  --color-ink-700: oklch(0.34 0.05 262);
+
+  --color-slate-650: oklch(0.47 0.03 260);
+  --color-slate-550: oklch(0.56 0.025 258);
+  --color-slate-400: oklch(0.72 0.02 258);
+  --color-slate-300: oklch(0.83 0.015 258);
+  --color-slate-200: oklch(0.9 0.012 258);
+  --color-slate-150: oklch(0.935 0.01 258);
+  --color-slate-100: oklch(0.96 0.008 258);
+  --color-mist: oklch(0.975 0.006 258);
+  --color-paper: oklch(0.993 0.003 258);
+
+  --color-blue-650: oklch(0.52 0.19 262);
+  --color-blue-500: oklch(0.62 0.17 252);
+  --color-opal-300: oklch(0.88 0.1 205);
+  --color-opal-400: oklch(0.8 0.13 210);
+  --color-opal-500: oklch(0.72 0.14 215);
+  --color-opal-600: oklch(0.6 0.12 220);
+  --color-opal-700: oklch(0.5 0.1 225);
+  --color-teal-400: oklch(0.8 0.12 180);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+:root {
+  --header-h: 68px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --opal-gradient: linear-gradient(120deg, var(--color-blue-650) 0%, var(--color-opal-500) 55%, var(--color-teal-400) 100%);
+  color-scheme: light;
+}
+
+html {
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-mist);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--color-opal-300); color: var(--color-ink-950); }
+
+:focus-visible {
+  outline: 2px solid var(--color-opal-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Display type: Archivo pushed wide to echo the OPAL wordmark */
+.font-display { font-family: var(--font-display); font-stretch: 112%; }
+.font-wide { font-family: var(--font-display); font-stretch: 125%; }
+
+.container-x {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/*
+  Facet: the shield's cut corner, used as the recurring container shape.
+  Rule: surfaces get ONE chamfered corner (top-right), radius stays 4px elsewhere.
+*/
+.facet {
+  --cut: 18px;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
+  border-radius: 4px;
+}
+.facet-sm { --cut: 10px; }
+.facet-lg { --cut: 28px; }
+
+/* Bordered facet: outer layer paints the hairline, inner layer the surface */
+.facet-border { padding: 1px; background: var(--color-slate-200); }
+.facet-border > .facet-inner { --cut: inherit; clip-path: polygon(0 0, calc(100% - var(--cut) + 0.4px) 0, 100% calc(var(--cut) - 0.4px), 100% 100%, 0 100%); border-radius: 3px; }
+
+/* Thin luminous rule used as a section device */
+.lumen-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--color-opal-400) 70%, transparent), transparent);
+}
+
+.text-opal-gradient {
+  background: var(--opal-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Dark surfaces: navy with a faint facet grid */
+.surface-dark {
+  background-color: var(--color-ink-950);
+  color: var(--color-slate-150);
+}
+.facet-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--color-opal-400) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--color-opal-400) 7%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 20%, transparent 75%);
+}
+
+/* Scroll reveal (paired with <Reveal>) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal="in"] { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* Long-form content (guides, blog) */
+.prose-opal { color: var(--color-ink-800); font-size: 1.0625rem; line-height: 1.75; }
+.prose-opal > * + * { margin-top: 1.1em; }
+.prose-opal h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 650; font-size: 1.6rem; line-height: 1.2; color: var(--color-ink-950); margin-top: 2.2em; letter-spacing: -0.01em; }
+.prose-opal h3 { font-weight: 650; font-size: 1.15rem; color: var(--color-ink-950); margin-top: 1.8em; }
+.prose-opal ul { list-style: none; padding: 0; }
+.prose-opal ul li { position: relative; padding-left: 1.4em; }
+.prose-opal ul li + li { margin-top: 0.5em; }
+.prose-opal ul li::before { content: ""; position: absolute; left: 0.1em; top: 0.68em; width: 7px; height: 7px; background: var(--color-opal-500); transform: rotate(45deg) scaleX(0.7); }
+.prose-opal a { color: var(--color-blue-650); text-decoration: underline; text-underline-offset: 3px; }
+.prose-opal strong { color: var(--color-ink-950); font-weight: 650; }
+.prose-opal > div > * + * { margin-top: 1.1em; }
+.prose-opal > :first-child > h2:first-child, .prose-opal > h2:first-child { margin-top: 0; }
